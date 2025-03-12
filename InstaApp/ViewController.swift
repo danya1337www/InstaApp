@@ -12,6 +12,7 @@ class ViewController: UIViewController {
     
     private lazy var layout: UICollectionViewLayout = {
         let layout = UICollectionViewFlowLayout()
+        layout.minimumLineSpacing = 8
         layout.scrollDirection = .horizontal
         return layout
     }()
@@ -19,6 +20,10 @@ class ViewController: UIViewController {
     private lazy var collectionView: UICollectionView = {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: self.layout)
         collectionView.backgroundColor = .systemMint
+        collectionView.dataSource = self
+        collectionView.delegate = self
+        collectionView.register(StoryCell.self, forCellWithReuseIdentifier: "StoryCellID")
+        collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "DefaultCellID")
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         return collectionView
         
@@ -41,6 +46,36 @@ class ViewController: UIViewController {
             self.collectionView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
             self.collectionView.heightAnchor.constraint(equalToConstant: 90)
             ])
+    }
+}
+
+extension ViewController: UICollectionViewDataSource {
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        9
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "StoryCellID", for: indexPath) as? StoryCell
+        else {
+            return
+            collectionView.dequeueReusableCell(withReuseIdentifier: "DefaultCellID", for: indexPath)
+        }
+        cell.setup()
+        return cell
+        
+    }
+}
+
+extension ViewController: UICollectionViewDelegateFlowLayout {
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        CGSize(width: 74, height: 74
+        )
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+        UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
     }
 }
 
